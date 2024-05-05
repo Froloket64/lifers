@@ -4,7 +4,7 @@ A Rust crate that aims to generalize cellular automata creation. Current feature
 - [x] Easy creation using the builder pattern
 - [x] Fast simulation engine
 - [ ] Interface to create custom frontends
-  - [x] [ASCII frontend](github.com/Froloket64/lifers-ascii)
+  - [x] [ASCII frontend](https://github.com/Froloket64/lifers-ascii)
   - [ ] Raylib frontend
 
 ## Usage
