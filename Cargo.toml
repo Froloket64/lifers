@@ -1,0 +1,18 @@
+[package]
+name = "lifers"
+description = "An advanced cellular automata creation framework"
+version = "0.1.0"
+repository = "https://github.com/Froloket64/lifers.git"
+license = "MIT"
+edition = "2021"
+keywords = ["cellular_automata", "game_of_life", "framework"]
+categories = ["simulation"]
+
+[dependencies]
+
+[dev-dependencies]
+criterion = "0.5.1"
+
+[[bench]]
+harness = false
+name = "conway"
