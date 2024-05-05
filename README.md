@@ -14,7 +14,7 @@ use lifers::prelude::*;
 
 fn main() {
     // Use a 100x100 grid
-    let mut game = Automaton::build(100, 100)
+    let mut game = Automaton::build((100, 100))
         // Initialize all cells with random states (alive or dead)
         .init(|_| random::<bool>())
         // Count neighbors in radius of 1 for each cell
