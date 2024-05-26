@@ -3,6 +3,11 @@ lifers
 A Rust crate that aims to generalize cellular automata creation. Current features include:
 - [x] Easy creation using the builder pattern
 - [x] Fast simulation engine
+  - [ ] SIMD potential
+- [ ] Very ergonomic design for creating simulations
+  - [x] Full support for the builder pattern
+  - [ ] Multiple data collection functions for an automaton
+- [x] Arbitrary types support for cells' state and associated data
 - [ ] Interface to create custom frontends
   - [x] [ASCII frontend](https://github.com/Froloket64/lifers-ascii)
   - [ ] Raylib frontend

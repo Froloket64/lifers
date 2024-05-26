@@ -26,10 +26,41 @@
 //! game.step();
 //! ```
 
+#![warn(
+    clippy::pedantic,
+    clippy::nursery,
+    clippy::cargo,
+    clippy::allow_attributes_without_reason,
+    clippy::arithmetic_side_effects,
+    clippy::as_conversions,
+    clippy::clone_on_copy,
+    clippy::clone_on_ref_ptr,
+    clippy::dbg_macro,
+    clippy::decimal_literal_representation,
+    clippy::default_numeric_fallback,
+    clippy::default_union_representation,
+    clippy::exhaustive_enums,
+    clippy::expect_used,
+    clippy::format_push_string,
+    clippy::if_then_some_else_none
+)]
+#![deny(clippy::perf)]
+#![allow(
+    clippy::implicit_return,
+    clippy::missing_inline_in_public_items,
+    clippy::as_conversions,
+    clippy::must_use_candidate,
+    clippy::return_self_not_must_use,
+    clippy::missing_docs_in_private_items,
+    clippy::std_instead_of_core,
+    clippy::pub_use
+)]
+
 // TODO:
 // Ecosystem:
 // - [x] Engine
-//   -  [ ] Optimization
+//   - [x] Optimization
+//   - [ ] Custom types for different kinds of automata (e.g. Life-like, etc.)
 // - [x] API (builder, stepping, frontend creation..)
 // - [ ] Frontend
 //   - [ ] Raylib Frontend
