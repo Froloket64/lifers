@@ -67,6 +67,20 @@ impl<S, D> Automaton<S, D> {
     pub const fn cells(&self) -> &Grid<S> {
         &self.cells
     }
+
+    /// Returns the cells grid dimensions.
+    pub fn grid_size(&self) -> (usize, usize) {
+        self.cells
+            .get(0)
+            .map(|xs| xs.len())
+            .map(|l| (l, self.cells.len()))
+            .unwrap_or((0, 0))
+    }
+
+    /// Like [`grid_size()`](Self::grid_size), but doesn't perform bounds checks.
+    pub unsafe fn grid_size_unchecked(&self) -> (usize, usize) {
+        (self.cells[0].len(), self.cells.len())
+    }
 }
 
 /// A helper struct for building an [`Automaton`].
