@@ -16,6 +16,7 @@ A Rust crate that aims to generalize cellular automata creation. Current feature
 An example illustrating Conway's Game of Life implementation in `lifers`:
 ```rust
 use lifers::prelude::*;
+use rand::random;
 
 fn main() {
     // Use a 100x100 grid
@@ -23,9 +24,9 @@ fn main() {
         // Initialize all cells with random states (alive or dead)
         .init(|_| random::<bool>())
         // Count neighbors in radius of 1 for each cell
-        .map(|(x, y), _, cells| lifers::count_neighbors(cells, (x, y), 1, |b| *b))
+        .map(|(x, y), _, cells| count_neighbors(cells, (x, y), 1, |b| *b))
         // Change cells' state depending on the number of neighbors
-        .run(|(_, _), is_alive, neighbors_n| match is_alive {
+        .run(|_, is_alive, neighbors_n| match is_alive {
             true => (2..=3).contains(neighbors_n),
             false => *neighbors_n == 3,
         });
