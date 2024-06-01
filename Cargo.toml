@@ -1,7 +1,7 @@
 [package]
 name = "lifers"
 description = "An advanced cellular automata creation framework"
-version = "0.2.0"
+version = "0.2.1"
 repository = "https://github.com/Froloket64/lifers.git"
 license = "MIT"
 edition = "2021"

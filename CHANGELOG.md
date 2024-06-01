@@ -1,3 +1,8 @@
+0.2.1
+-----
+# API
+- Add `Automaton::grid_size()` and `Automaton::grid_size_unchecked()`
+
 0.2.0
 -----
 # API
