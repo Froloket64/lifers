@@ -8,9 +8,9 @@ A Rust crate that aims to generalize cellular automata creation. Current feature
   - [x] Full support for the builder pattern
   - [ ] Multiple data collection functions for an automaton
 - [x] Arbitrary types support for cells' state and associated data
-- [ ] Interface to create custom frontends
-  - [x] [ASCII frontend](https://github.com/Froloket64/lifers-ascii)
-  - [ ] Raylib frontend
+- [x] Interface to create custom frontends _(WIP)_
+  - [x] [ASCII frontend](https://crates.io/crates/lifers-ascii)
+  - [x] [Raylib frontend](https://crates.io/crates/lifers-raylib)
 
 ## Usage
 An example illustrating Conway's Game of Life implementation in `lifers`:
