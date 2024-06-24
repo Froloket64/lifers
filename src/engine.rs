@@ -82,13 +82,15 @@ impl<S, D> Automaton<S, D> {
     /// Returns the cells grid dimensions.
     pub fn grid_size(&self) -> (usize, usize) {
         self.cells
-            .get(0)
-            .map(|xs| xs.len())
-            .map(|l| (l, self.cells.len()))
-            .unwrap_or((0, 0))
+            .first()
+            .map(Vec::len)
+            .map_or((0, 0), |l| (l, self.cells.len()))
     }
 
     /// Like [`grid_size()`](Self::grid_size), but doesn't perform bounds checks.
+    ///
+    /// # Safety
+    /// This function will panic if the grid's width is 0.
     pub unsafe fn grid_size_unchecked(&self) -> (usize, usize) {
         (self.cells[0].len(), self.cells.len())
     }
