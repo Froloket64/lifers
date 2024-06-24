@@ -20,8 +20,8 @@ fn prepare_game(builder: AutomatonBuilder) -> Automaton<bool, usize> {
         .init(|_| false)
         .map(|(x, y), _, cells| count_neighbors(cells, (x, y), 1, |is_alive| *is_alive))
         .run(|_, is_alive, neighbors_n| match is_alive {
-            true => (2..=3).contains(neighbors_n),
-            false => *neighbors_n == 3,
+            true => (2..=3).contains(&neighbors_n),
+            false => neighbors_n == 3,
         })
 }
 

@@ -7,7 +7,7 @@ use crate::grid_map;
 
 pub type Pos = (usize, usize);
 pub type Grid<T> = Vec<Vec<T>>;
-pub type StepFn<S, D> = fn(Pos, S, &D) -> S;
+pub type StepFn<S, D> = fn(Pos, S, D) -> S;
 pub type DataFn<S, D> = fn(Pos, &S, &Grid<S>) -> D;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -39,7 +39,7 @@ impl<S, D> Automaton<S, D> {
     /// Computes the next generation.
     pub fn step(&mut self) -> ExecutionState {
         // Get cells data
-        let cells_data: Vec<Vec<D>> =
+        let mut cells_data: Vec<Vec<D>> =
             grid_map!(self.cells.iter(), self.data_fn, &self.cells).collect();
 
         // Run step function
@@ -49,7 +49,18 @@ impl<S, D> Automaton<S, D> {
             .map(|(y, xs)| {
                 xs.into_iter()
                     .enumerate()
-                    .map(|(x, state)| (self.step_fn)((x, y), state, &cells_data[y][x]))
+                    .map(|(x, state)| {
+                        // NOTE: `cells_data` is never read from, so we can zero
+                        // out its elements
+                        #[allow(unsafe_code, clippy::mem_replace_with_uninit)]
+                        unsafe {
+                            (self.step_fn)(
+                                (x, y),
+                                state,
+                                std::mem::replace(&mut cells_data[y][x], std::mem::zeroed()),
+                            )
+                        }
+                    })
                     .collect()
             })
             .collect();
@@ -211,7 +222,7 @@ mod tests {
 
     const DEFAULT_GRID_SIZE: (usize, usize) = (10, 10);
     const DEFAULT_INIT_FN: fn((usize, usize)) -> bool = |(x, y)| x > y;
-    const DEFAULT_STEP_FN: fn((usize, usize), bool, &()) -> bool = |(_x, _y), state, _| state;
+    const DEFAULT_STEP_FN: fn((usize, usize), bool, ()) -> bool = |(_x, _y), state, _| state;
 
     fn default_game() -> Automaton<bool, ()> {
         AutomatonBuilder::new(DEFAULT_GRID_SIZE)
