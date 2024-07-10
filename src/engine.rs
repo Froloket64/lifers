@@ -108,6 +108,16 @@ impl<S, D> Automaton<S, D> {
     pub unsafe fn grid_size_unchecked(&self) -> (usize, usize) {
         (self.cells[0].len(), self.cells.len())
     }
+
+    /// Returns `true` if the generation limit has been exceeded.
+    pub fn is_finished(&self) -> bool {
+        self.generations_left.map_or(false, |x| x == 0)
+    }
+
+    /// Returns `true` if the generation limit is not set.
+    pub fn is_infinite(&self) -> bool {
+        self.generations_left.is_none()
+    }
 }
 
 /// A helper struct for building an [`Automaton`].
