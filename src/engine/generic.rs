@@ -1,23 +1,17 @@
 //! Automata engine components
 
-use crate::grid_map;
+use crate::{
+    engine::{ExecutionState, Pos},
+    grid_map,
+};
 
 // TODO:
 // - Allow multiple `DataFn`s in `Automaton`
 // - Create a trait to unify automaton/builder methods
 
-pub type Pos = (usize, usize);
 pub type Grid<T> = Vec<Vec<T>>;
 pub type StepFn<S, D> = fn(Pos, S, D) -> S;
 pub type DataFn<S, D> = fn(Pos, &S, &Grid<S>) -> D;
-
-#[derive(Debug, PartialEq, Eq)]
-#[allow(clippy::exhaustive_enums)]
-pub enum ExecutionState {
-    Finished,
-    Remaining(u32),
-    Infinite,
-}
 
 /// The main struct that contains the state of an automaton.
 ///
@@ -198,7 +192,6 @@ impl<S, D> MappedBuilder<S, D> {
     pub fn run(self, f: StepFn<S, D>) -> Automaton<S, D> {
         Automaton {
             cells: self.grid,
-            // cells_data: vec![],
             generations_left: self.generations_limit,
             data_fn: self.data_fn,
             step_fn: f,
@@ -246,9 +239,8 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{engine::AutomatonBuilder, prelude::ExecutionState};
-
-    use super::Automaton;
+    use super::{Automaton, AutomatonBuilder};
+    use crate::engine::ExecutionState;
 
     const DEFAULT_GRID_SIZE: (usize, usize) = (10, 10);
     const DEFAULT_INIT_FN: fn((usize, usize)) -> bool = |(x, y)| x > y;

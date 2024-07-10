@@ -76,7 +76,7 @@ mod macros;
 /// Helper module with all common imports
 pub mod prelude {
     pub use crate::{
-        engine::{count_neighbors, iter_grid, Automaton, ExecutionState},
+        engine::{generic, life_like},
         frontend::RenderCell,
     };
 }
