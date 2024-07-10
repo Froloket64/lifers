@@ -4,6 +4,7 @@ use crate::grid_map;
 
 // TODO:
 // - Allow multiple `DataFn`s in `Automaton`
+// - Create a trait to unify automaton/builder methods
 
 pub type Pos = (usize, usize);
 pub type Grid<T> = Vec<Vec<T>>;
@@ -28,6 +29,18 @@ pub struct Automaton<S, D = ()> {
     data_fn: DataFn<S, D>,
 }
 
+#[macro_export]
+macro_rules! impl_builder_misc {
+    ($name:tt) => {
+        /// Set a limit on the  number of generations that the automaton will produce.
+        pub const fn generations(mut self, generations_limit: u32) -> Self {
+            self.generations_limit = Some(generations_limit);
+
+            self
+        }
+    };
+}
+
 impl Automaton<(), ()> {
     /// Returns a builder to help construct an automaton.
     pub const fn build(grid_size: (usize, usize)) -> AutomatonBuilder {
@@ -39,6 +52,7 @@ impl<S, D> Automaton<S, D> {
     /// Computes the next generation.
     pub fn step(&mut self) -> ExecutionState {
         // Get cells data
+        // OPTIM: Prealloc `cells_data` in `Self::new()` and reuse it
         let mut cells_data: Vec<Vec<D>> =
             grid_map!(self.cells.iter(), self.data_fn, &self.cells).collect();
 
@@ -116,23 +130,30 @@ impl AutomatonBuilder {
             .map(|y| (0..self.grid_size.1).map(|x| (f)((x, y))).collect())
             .collect();
 
-        InitBuilder { grid }
+        InitBuilder {
+            grid,
+            generations_limit: None,
+        }
     }
 }
 
 /// An initialized automaton builder.
 pub struct InitBuilder<S> {
     grid: Grid<S>,
+    generations_limit: Option<u32>,
 }
 
 impl<S> InitBuilder<S> {
-    /// Converts `self` to a [`MappedBuilder<S, ()>`] directly, setting a
-    /// `()`-returning data function.
-    pub fn to_mapped(self) -> MappedBuilder<S, ()> {
-        MappedBuilder {
-            grid: self.grid,
+    /// Returns an [`Automaton<S, D>`] using the information contained in `self`.
+    ///
+    /// Since no data function is provided at this level (see [`MappedBuilder`]),
+    /// it is defaulted to `fn(...) -> ()`.
+    pub fn run(self, f: StepFn<S, ()>) -> Automaton<S, ()> {
+        Automaton {
+            cells: self.grid,
+            generations_left: self.generations_limit,
             data_fn: |_, _, _| (),
-            generations_limit: None,
+            step_fn: f,
         }
     }
 
@@ -145,6 +166,8 @@ impl<S> InitBuilder<S> {
             generations_limit: None,
         }
     }
+
+    impl_builder_misc! { Self }
 }
 
 /// A builder with a grid and a data collection function attached.
@@ -172,12 +195,7 @@ impl<S, D> MappedBuilder<S, D> {
         }
     }
 
-    /// Set a limit on the  number of generations that the automaton will produce.
-    pub const fn generations(mut self, generations_limit: u32) -> Self {
-        self.generations_limit = Some(generations_limit);
-
-        self
-    }
+    impl_builder_misc! { Self }
 }
 
 pub fn iter_grid<T>(grid: &[Vec<T>]) -> impl Iterator<Item = (usize, usize, &T)> {
@@ -229,7 +247,6 @@ mod tests {
     fn default_game() -> Automaton<bool, ()> {
         AutomatonBuilder::new(DEFAULT_GRID_SIZE)
             .init(DEFAULT_INIT_FN)
-            .to_mapped()
             .generations(2)
             .run(DEFAULT_STEP_FN)
     }
@@ -238,7 +255,6 @@ mod tests {
     fn builder() {
         let _game = Automaton::build(DEFAULT_GRID_SIZE)
             .init(DEFAULT_INIT_FN)
-            .to_mapped()
             .generations(5)
             .run(DEFAULT_STEP_FN);
 
@@ -257,7 +273,6 @@ mod tests {
 
         let mut game = AutomatonBuilder::new(DEFAULT_GRID_SIZE)
             .init(DEFAULT_INIT_FN)
-            .to_mapped()
             .run(DEFAULT_STEP_FN);
 
         assert_eq!(game.step(), ExecutionState::Infinite);
