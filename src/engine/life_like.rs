@@ -1,3 +1,26 @@
+//! An automaton that handles scenes with (potentially)
+//! infinitely-sized grids.
+//!
+//! This makes it possible to both change visible grid size (via a
+//! frontend) on the fly, and not worry about overflowing grid
+//! borders.
+//!
+//! # Limitations
+//! This struct can only model automata where the cells that are dead
+//! can only "resurrect" when they are in a radius of a cell that is
+//! already alive.
+//!
+//! This makes it similar to how Life-like automata operate, hence the
+//! name.
+//!
+//! Because of this design cells are represented as an [`Option<S>`],
+//! where dead cells are `None` and alive cells are `Some(s)`
+//! holding a value of a state type `S`.
+//!
+//! # Performance
+//! This automaton has `O(n)` time complexity, where `n` is the **number
+//! of "alive" cells**.
+
 use itertools::Itertools;
 use rustc_hash::FxHashMap;
 use std::collections::HashMap;
@@ -18,12 +41,13 @@ pub type StepFn<S, D> = fn(Pos, Option<S>, D) -> Option<S>;
 
 /// A (Game of) Life-like automaton.
 ///
-/// This means that it only considers the cells that are currently alive
-/// and the ones around them in a fixed radius.
+/// This means that it only considers the cells that are **currently
+/// alive** and the ones around them in a **fixed radius**.
 ///
-/// The name might feel a bit misleading because the automaton actually
-/// allows for much more advanced features than GoL has (e.g. position-based
-/// logic, multiple states instead of only two, etc.).
+/// The name might feel a bit misleading because the automaton
+/// actually allows for much more advanced features than GoL has
+/// (e.g. position-based logic, multiple states instead of only two,
+/// etc.).
 pub struct Automaton<S, D = ()> {
     cells: Grid<S>,
     radius: u8,

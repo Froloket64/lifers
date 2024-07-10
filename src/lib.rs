@@ -63,10 +63,10 @@
 // Ecosystem:
 // - [x] Engine
 //   - [x] Optimization
-//   - [ ] Custom types for different kinds of automata (e.g. Life-like, etc.)
+//   - [-] Custom types for different kinds of automata (e.g. Life-like, etc.)
 // - [x] API (builder, stepping, frontend creation..)
-// - [ ] Frontend
-//   - [ ] Raylib Frontend
+// - [x] Frontend
+//   - [x] Raylib Frontend
 //   - [-] ASCII Frontend
 
 pub mod engine;

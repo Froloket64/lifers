@@ -1,3 +1,5 @@
+//! Automata engine components.
+
 pub mod generic;
 pub mod life_like;
 

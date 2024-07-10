@@ -1,4 +1,11 @@
-//! Automata engine components
+//! Automata engine components for generics automatons. It handles
+//! scenes with a fixed grid and number of cells.
+//!
+//! # Performance
+//! This automaton has `O(n)` time complexity, where `n` is the **number
+//! of cells** _(width * height)_.
+//!
+//! For grid-independent automata, see [`life_like::Automaton`](super::life_like::Automaton).
 
 use crate::{
     engine::{ExecutionState, Pos},
